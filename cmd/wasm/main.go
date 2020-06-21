@@ -6,21 +6,42 @@ import (
     "syscall/js"
 )
 
-func jsonWrapper() js.Func {
-        jsonFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-                if len(args) <= 0 {
-                        return "No JSON passed as parameter"
-                }
-                inputJSON := args[0].String()
-                fmt.Printf("input %s\n", inputJSON)
-                pretty, err := prettyJson(inputJSON)
-                if err != nil {
-                        fmt.Printf("unable to convert to json %s\n", err)
-                        return err.Error()
-                }
-                return pretty
-        })
-        return jsonFunc
+func jsonWrapper() js.Func {  
+    jsonfunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+        if len(args) <= 0 {
+            result := map[string]interface{}{
+                "error": "No JSON passed as parameter",
+            }
+            return result
+        }
+        jsDoc := js.Global().Get("document")
+        if !jsDoc.Truthy() {
+            result := map[string]interface{}{
+                "error": "Unable to get document object",
+            }
+            return result
+        }
+        jsonOuputTextArea := jsDoc.Call("getElementById", "jsonoutput")
+        if !jsonOuputTextArea.Truthy() {
+            result := map[string]interface{}{
+                "error": "Unable to get output text area",
+            }
+            return result
+        }
+        inputJSON := args[0].String()
+        fmt.Printf("input %s\n", inputJSON)
+        pretty, err := prettyJson(inputJSON)
+        if err != nil {
+            errStr := fmt.Sprintf("unable to parse JSON. Error %s occurred\n", err)
+            result := map[string]interface{}{
+                "error": errStr,
+            }
+            return result
+        }
+        jsonOuputTextArea.Set("value", pretty)
+        return nil
+    })
+    return jsonfunc
 }
 
 func prettyJson(input string) (string, error) {
