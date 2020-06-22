@@ -8,8 +8,8 @@ import (
 
 func jsonWrapper() js.Func {
         jsonFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-                if len(args) <= 0 {
-                        return "No JSON passed as parameter"
+                if len(args) != 1 {
+		        return "Invalid no of arguments passed"
                 }
                 inputJSON := args[0].String()
                 fmt.Printf("input %s\n", inputJSON)
