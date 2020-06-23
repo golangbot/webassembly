@@ -8,9 +8,9 @@ import (
 
 func jsonWrapper() js.Func {  
     jsonfunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-        if len(args) <= 0 {
+        if len(args) != 1 {
             result := map[string]interface{}{
-                "error": "No JSON passed as parameter",
+                "error": "Invalid no of arguments passed",
             }
             return result
         }
