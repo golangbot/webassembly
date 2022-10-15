@@ -7,7 +7,7 @@ import (
 )
 
 func jsonWrapper() js.Func {
-	jsonFunc := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	jsonFunc := js.FuncOf(func(this js.Value, args []js.Value) any {
 		if len(args) != 1 {
 			return "Invalid no of arguments passed"
 		}
@@ -24,7 +24,7 @@ func jsonWrapper() js.Func {
 }
 
 func prettyJson(input string) (string, error) {
-	var raw interface{}
+	var raw any
 	if err := json.Unmarshal([]byte(input), &raw); err != nil {
 		return "", err
 	}
