@@ -59,5 +59,5 @@ func prettyJson(input string) (string, error) {
 func main() {
 	fmt.Println("Go Web Assembly")
 	js.Global().Set("formatJSON", jsonWrapper())
-	<-make(chan bool)
+	<-make(chan struct{})
 }
